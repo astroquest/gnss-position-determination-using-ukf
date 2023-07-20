@@ -1,14 +1,15 @@
 #include <iostream>
-#include <string.h>
+#include <Eigen/Dense>
+
 #include "constants.h"
 #include "kalman_settings.h"
+#include "covariances.h"
 
 using namespace std;
 
 int main(){
-    KalmanSettings kalman_settings_1;
-
-    // cout << to_string(kalman_settings_1.set_weights()) << endl;
+    KalmanSettings kalman_settings;
+    Covariances covariances;
 
     return 0;
 }

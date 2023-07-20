@@ -1,4 +1,6 @@
-using namespace std;
+#include <Eigen/Dense>
+
+using Eigen::VectorXd;
 
 class KalmanSettings{
     public:
@@ -11,9 +13,7 @@ class KalmanSettings{
 
             Wm.resize(2*n+1);
             Wc.resize(2*n+1);
-        };
 
-        void set_weights(){
             Wm[0] = lambda/(n + lambda);
             Wc[0] = lambda/(n + lambda) + (1 - pow(alpha,2) + beta);
 
@@ -24,8 +24,8 @@ class KalmanSettings{
         };
 
         double eta;
-        vector<double> Wm;
-        vector<double> Wc;
+        VectorXd Wm;
+        VectorXd Wc;
 
     private:
         int n;
