@@ -1,23 +1,25 @@
 #include <iostream>
 #include <Eigen/Dense>
+#include <vector>
+#include <cmath>
+#include <random>
+#include <fstream>
 
 #include "constants.h"
+#include "receiver.h"
 #include "satellite.h"
+#include "simulation.h"
 #include "kalman_settings.h"
 #include "covariances.h"
 
 using namespace std;
 
 int main(){
-    double orbital_radius = 25e6;
+    Simulation simulation;
 
-    Satellite satellite_1(orbital_radius);
-    satellite_1.setInitialConditions(0);
-    satellite_1.propagateOrbit(3600);
-
-
-    KalmanSettings kalman_settings;
-    Covariances covariances;
+    simulation.initialize();
+    simulation.run();
+    simulation.dumpToFile("simulation_results.txt");
 
     return 0;
 }
