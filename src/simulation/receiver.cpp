@@ -8,7 +8,7 @@ Receiver::Receiver(double init_clock_bias, double init_x_pos, double init_y_pos,
 }
 
 void Receiver::initialize(double init_clock_bias, double init_x_pos, double init_y_pos){
-    clock_bias = init_clock_bias; //c*1e-5
+    clock_bias = init_clock_bias;
 
     position.push_back(init_x_pos);
     position.push_back(init_y_pos);
