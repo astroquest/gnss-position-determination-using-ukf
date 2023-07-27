@@ -6,7 +6,7 @@
 
 class Weights{
     public:
-        Weights(int, int, double, double, Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
+        Weights(int, int, Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
 
         void setEta();
         void setLambda();
@@ -23,8 +23,8 @@ class Weights{
         double eta;
 
     private:
-        int n_states;
-        int n_measurements;
+        int n_x;
+        int n_y;
         int n_sigma;
         double alpha;
         double beta;

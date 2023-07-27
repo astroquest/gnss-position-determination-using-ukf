@@ -4,13 +4,13 @@
 
 #include "weights.hpp"
 
-Weights::Weights(int n, int m, double alph, double bet, Eigen::VectorXd p, Eigen::VectorXd q, Eigen::VectorXd r){
-    n_states = n;
-    n_measurements = m;
-    n_sigma = 2*n + 1;
+Weights::Weights(int n_states, int n_measurements, Eigen::VectorXd p, Eigen::VectorXd q, Eigen::VectorXd r){
+    n_x = n_states;
+    n_y = n_measurements;
+    n_sigma = 2*n_x + 1;
 
-    alpha = alph;
-    beta = bet;
+    alpha = 1e-3;
+    beta = 2;
 
     setLambda();
     setEta();
@@ -19,17 +19,17 @@ Weights::Weights(int n, int m, double alph, double bet, Eigen::VectorXd p, Eigen
 }
 
 void Weights::setEta(){
-    eta = sqrt(n_states + lambda);
+    eta = sqrt(n_x + lambda);
 }
 
 void Weights::setLambda(){
-    lambda = n_states*(pow(alpha,2) - 1);
+    lambda = n_x*(pow(alpha,2) - 1);
 }
 
 void Weights::setUncertaintyWeights(Eigen::VectorXd p, Eigen::VectorXd q, Eigen::VectorXd r){
-    P.resize(n_states, n_states);
-    Q.resize(n_states, n_states);
-    R.resize(n_measurements, n_measurements);
+    P.resize(n_x, n_x);
+    Q.resize(n_x, n_x);
+    R.resize(n_y, n_y);
 
     P = p.asDiagonal();
     Q = q.asDiagonal();
@@ -41,11 +41,11 @@ void Weights::setSigmaPointWeights(){
     Wc.resize(n_sigma, n_sigma);
     Wc = Eigen::MatrixXd::Zero(n_sigma, n_sigma);
 
-    Wm(0) = lambda/(n_states + lambda);
-    Wc(0,0) = lambda/(n_states + lambda) + (1 - pow(alpha,2) + beta);
+    Wm(0) = lambda/(n_x + lambda);
+    Wc(0,0) = lambda/(n_x + lambda) + (1 - pow(alpha,2) + beta);
 
     for(int i = 1; i < n_sigma; i++){
-        Wm(i) = 1/(2*(n_states + lambda));
-        Wc(i,i) = 1/(2*(n_states + lambda));
+        Wm(i) = 1/(2*(n_x + lambda));
+        Wc(i,i) = 1/(2*(n_x + lambda));
     }
 }

@@ -8,35 +8,19 @@
 // #include "simulation/receiver.hpp"
 // #include "simulation/satellite.hpp"
 // #include "simulation/simulation.hpp"
-// #include "state_estimator/weights.hpp"
+#include "state_estimator/weights.hpp"
+#include "state_estimator/state_estimator.hpp"
 
 int main(){
-    // int n = 3;
-    // int m = 4;
-    // double alpha = 1e-3;
-    // double beta = 2;
+    int n = 3;
+    int m = 4;
+    Eigen::VectorXd x0(3);
+    x0 << 1, 2, 3;
 
-    // Weights weights(n, m, alpha, beta, p, q, r);
-    // std::cout << weights.P << std::endl;
-    // std::cout << weights.Wm << std::endl;
-    // std::cout << weights.Wc << std::endl;
+    StateEstimator state_estimator(3, 4, x0);
+    // std::cout << state_estimator.x_corr << std::endl;
+    state_estimator.setSigmaPoints();
 
-    // Eigen::MatrixXd P(3,3);
-    // P << 10, 0, 0, 0, 10, 0, 0, 0, 10;
-
-    // Eigen::MatrixXd S = P.llt().matrixL();
-
-    // std::cout << P << std::endl;
-    // std::cout << S.col(0) << std::endl;
-
-    // Eigen::MatrixXd M(3,3);
-    // Eigen::VectorXd V(3);
-    // M << 0, 0, 0, 0, 0, 0, 0, 0, 0;
-    // V << 1,1,1;
-    // std::cout << M << std::endl;
-    // // M(Eigen::all, 0) = V;
-    // M.col(0) = V;
-    // std::cout << M << std::endl;
 
     return 0;
 }

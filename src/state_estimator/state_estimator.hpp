@@ -5,13 +5,13 @@
 
 class StateEstimator{
     public:
-        StateEstimator(int, Eigen::VectorXd, Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::VectorXd);
+        StateEstimator(int, int, Eigen::VectorXd);
 
-        void initialize(double, Eigen::MatrixXd);
-        void getSigmaPoints(double, Eigen::VectorXd, Eigen::MatrixXd);
-        void predict(Eigen::VectorXd u);
+        void initialize(Eigen::VectorXd);
+        void setSigmaPoints();
+        void predict(Eigen::VectorXd);
         void getKalmanGain();
-        void correct(double);
+        void correct(Eigen::VectorXd);
 
         Eigen::VectorXd x_corr;
         Eigen::MatrixXd P_corr;
@@ -19,7 +19,9 @@ class StateEstimator{
         Eigen::VectorXd getOutput(Eigen::VectorXd, Eigen::VectorXd);
 
         int n_x;
+        int n_y;
         int n_sigma;
+        double eta;
         Eigen::MatrixXd x_pred;
         Eigen::MatrixXd y_pred;
         Eigen::MatrixXd P_pred;
