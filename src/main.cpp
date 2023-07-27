@@ -12,20 +12,33 @@
 #include "state_estimator/state_estimator.hpp"
 
 int main(){
-    Simulation simulation(3600, 10);
+    //// SIMULATION
+    Simulation simulation(100, 10);
     simulation.run();
 
-    Eigen::VectorXd x0(3);
-    x0 << 1, 2, 3;
+    Eigen::MatrixXd baseline = simulation.states_rec;
+    Eigen::MatrixXd input;
+    input.resize(simulation.num_samples, 4*2);
+    input << simulation.states_sat_1, 
+                simulation.states_sat_2, 
+                simulation.states_sat_3, 
+                simulation.states_sat_4;
+    Eigen::MatrixXd output = simulation.ranges;
+    output.resize(simulation.num_samples, 4);
 
-    // StateEstimator state_estimator(3, 4, x0);
+    //// STATE ESTIMATION
+    Eigen::VectorXd x0(4);
+    x0 << 0, 0, 0, c;
 
-    // for(int i = 0; i < 100; i++){
-    //     state_estimator.getSigmaPoints();
-    //     state_estimator.predict(input(Eigen::all,i));
-    //     state_estimator.getKalmanGain();
-    //     state_estimator.correct(output(Eigen::all,i));
-    // }
+    StateEstimator state_estimator(3, 4, x0);
+
+    for(int i = 0; i < 100; i++){
+        state_estimator.getSigmaPoints();
+        std::cout << state_estimator.x_corr << std::endl;
+        state_estimator.predict(input.row(i).transpose());
+        state_estimator.getKalmanGain();
+        state_estimator.correct(output.row(i).transpose());
+    }
 
 
     return 0;

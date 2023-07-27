@@ -5,19 +5,19 @@
 
 class Receiver{
     public:
-        Receiver(double = c*1e-5, double = earth_radius, double = 0, double = c*1e-8, double = 0.1);
+        Receiver();
 
-        void initialize(double, double, double);
+        void initialize(double, double, double, double, double, double);
         void propagateLocation(double);
         void propagateClockBias(double);
 
-        std::vector<double> position;
+        Eigen::Vector3d position;
         double clock_bias;
 
     private:
+        double stdev_position;
         double stdev_clock_bias;
-        double stdev_pos_rec;
-        std::vector<double> random_walk_pos_rec;
+        Eigen::Vector3d random_walk_position;
         double random_walk_clock_bias;
 
         std::default_random_engine gen;

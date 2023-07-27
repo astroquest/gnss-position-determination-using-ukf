@@ -8,7 +8,7 @@ class Satellite{
         void initialize(double);
         void propagateOrbit(double);
 
-        std::vector<double> position;
+        Eigen::Vector2d position;
 
         double orbital_radius;
     private:

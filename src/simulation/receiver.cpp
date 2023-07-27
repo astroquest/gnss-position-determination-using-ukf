@@ -1,31 +1,33 @@
 #include <random>
+#include <Eigen/Dense>
+#include <iostream>
 
 #include "../constants.hpp"
 #include "receiver.hpp"
 
-Receiver::Receiver(double init_clock_bias, double init_x_pos, double init_y_pos, double stdev_clock_bias, double stdev_pos_rec){
-    initialize(init_clock_bias, init_x_pos, init_y_pos);
-}
+Receiver::Receiver(){}
 
-void Receiver::initialize(double init_clock_bias, double init_x_pos, double init_y_pos){
+void Receiver::initialize(double init_x_pos, double init_y_pos, double init_z_pos, double init_clock_bias, 
+                            double init_stdev_position, double init_stdev_clock_bias){
+    stdev_position = init_stdev_position;
+    stdev_clock_bias = init_stdev_clock_bias;
+
     clock_bias = init_clock_bias;
-
-    position.push_back(init_x_pos);
-    position.push_back(init_y_pos);
-
-    random_walk_pos_rec.push_back(0);
-    random_walk_pos_rec.push_back(0);
+    position << init_x_pos, init_y_pos, init_z_pos;
 }
 
 void Receiver::propagateLocation(double sampling_time){
-    std::normal_distribution<double> norm_dist_pos_rec(0,stdev_pos_rec);
+    std::normal_distribution<double> distribution_position(0,stdev_position);
 
-    position[0] = position[0] + sampling_time*norm_dist_pos_rec(gen);
-    position[1] = position[1] + sampling_time*norm_dist_pos_rec(gen);  
+    random_walk_position << distribution_position(gen),
+                            distribution_position(gen),
+                            distribution_position(gen);
+
+    position = position + sampling_time*random_walk_position;
 }
 
 void Receiver::propagateClockBias(double sampling_time){
-    std::normal_distribution<double> norm_dist_clock_bias(0,stdev_clock_bias);
+    std::normal_distribution<double> distribution_clock_bias(0,stdev_clock_bias);
 
-    clock_bias = clock_bias + sampling_time*norm_dist_clock_bias(gen);   
+    clock_bias = clock_bias + sampling_time*distribution_clock_bias(gen);   
 }

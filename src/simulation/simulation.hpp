@@ -3,45 +3,33 @@
 
 class Simulation{
     public:
-        Simulation(double = 3600, double = 10);
+        Simulation(double, double);
 
         void initialize();
         void run();
         void dump(std::string);
 
+        Eigen::VectorXd time;
+        Eigen::MatrixXd states_rec;
+        Eigen::MatrixXd states_sat_1;
+        Eigen::MatrixXd states_sat_2;
+        Eigen::MatrixXd states_sat_3;
+        Eigen::MatrixXd states_sat_4;
+        Eigen::MatrixXd ranges;
+
+        int num_samples;
+        
     private:
-        double getPseudorange(double, double, double, double, double);
+        double getPseudorange(Eigen::Vector3d, Eigen::Vector2d, double);
 
         Receiver receiver;
-        Satellite satellite_1;
-        Satellite satellite_2;
-        Satellite satellite_3;
-        Satellite satellite_4;
+        Satellite sat_1;
+        Satellite sat_2;
+        Satellite sat_3;
+        Satellite sat_4;
 
         double sim_time;
         double sampling_time;
-        int num_samples;
-
-        std::vector<double> time;
-        std::vector<double> x_rec;
-        std::vector<double> y_rec;
-        std::vector<double> clock_bias_rec;
-
-        std::vector<double> x_sat_1;
-        std::vector<double> y_sat_1;
-        std::vector<double> range_1;
-
-        std::vector<double> x_sat_2;
-        std::vector<double> y_sat_2;
-        std::vector<double> range_2;
-
-        std::vector<double> x_sat_3;
-        std::vector<double> y_sat_3;
-        std::vector<double> range_3;
-        
-        std::vector<double> x_sat_4;
-        std::vector<double> y_sat_4;
-        std::vector<double> range_4;
 };
 
 #endif

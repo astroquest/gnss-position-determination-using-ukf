@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <Eigen/Dense>
 
 #include "../constants.hpp"
 #include "receiver.hpp"
@@ -17,92 +18,77 @@ Simulation::Simulation(double t_sim, double t_sample){
 }
 
 void Simulation::initialize(){
-    receiver.initialize(c, earth_radius, 0);
-    satellite_1.initialize(0);
-    satellite_2.initialize(10*pi/180);
-    satellite_3.initialize(20*pi/180);
-    satellite_4.initialize(30*pi/180);
+    num_samples = sim_time/sampling_time;
 
-    time.push_back(0);
+    // object initial conditions (need more accessible place for this)
+    receiver.initialize(earth_radius, 0, 1, c, 0.01, c*1e-8);
+    sat_1.initialize(0);
+    sat_2.initialize(10*pi/180);
+    sat_3.initialize(20*pi/180);
+    sat_4.initialize(30*pi/180);
 
-    x_rec.push_back(receiver.position[0]);
-    y_rec.push_back(receiver.position[1]);
-    clock_bias_rec.push_back(receiver.clock_bias);
+    time.resize(num_samples);
+    states_rec.resize(num_samples, 4);
+    states_sat_1.resize(num_samples, 2);
+    states_sat_2.resize(num_samples, 2);
+    states_sat_3.resize(num_samples, 2);
+    states_sat_4.resize(num_samples, 2);
+    ranges.resize(num_samples, 4);
 
-    x_sat_1.push_back(satellite_1.position[0]);
-    y_sat_1.push_back(satellite_1.position[1]);
-    range_1.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_1.position[0], satellite_1.position[1], receiver.clock_bias));
-
-    x_sat_2.push_back(satellite_2.position[0]);
-    y_sat_2.push_back(satellite_2.position[1]);
-    range_2.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_2.position[0], satellite_2.position[1], receiver.clock_bias));
-
-    x_sat_3.push_back(satellite_3.position[0]);
-    y_sat_3.push_back(satellite_3.position[1]);
-    range_3.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_3.position[0], satellite_3.position[1], receiver.clock_bias));
-
-    x_sat_4.push_back(satellite_4.position[0]);
-    y_sat_4.push_back(satellite_4.position[1]);
-    range_4.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_4.position[0], satellite_4.position[1], receiver.clock_bias));
+    time(0) = 0;
+    states_rec.row(0) << receiver.position.transpose(), receiver.clock_bias;
+    states_sat_1.row(0) << sat_1.position.transpose();
+    states_sat_2.row(0) << sat_2.position.transpose();
+    states_sat_3.row(0) << sat_3.position.transpose();
+    states_sat_4.row(0) << sat_4.position.transpose();
+    ranges.row(0) << getPseudorange(receiver.position, sat_1.position, receiver.clock_bias),
+                        getPseudorange(receiver.position, sat_2.position, receiver.clock_bias),
+                        getPseudorange(receiver.position, sat_3.position, receiver.clock_bias),
+                        getPseudorange(receiver.position, sat_4.position, receiver.clock_bias);
 }
 
 void Simulation::run(){
-    num_samples = sim_time/sampling_time;
-
-    for(int i = 0; i < num_samples; i++){
-        double time_next = time[i] + sampling_time;
-        
+    for(int i = 1; i < num_samples; i++){
         receiver.propagateLocation(sampling_time);
         receiver.propagateClockBias(sampling_time);
 
-        satellite_1.propagateOrbit(sampling_time);
-        satellite_2.propagateOrbit(sampling_time);
-        satellite_3.propagateOrbit(sampling_time);
-        satellite_4.propagateOrbit(sampling_time);
+        sat_1.propagateOrbit(sampling_time);
+        sat_2.propagateOrbit(sampling_time);
+        sat_3.propagateOrbit(sampling_time);
+        sat_4.propagateOrbit(sampling_time);
 
-        time.push_back(time_next);
-
-        x_rec.push_back(receiver.position[0]);
-        y_rec.push_back(receiver.position[1]);
-        clock_bias_rec.push_back(receiver.clock_bias);
-
-        x_sat_1.push_back(satellite_1.position[0]);
-        y_sat_1.push_back(satellite_1.position[1]);
-        range_1.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_1.position[0], satellite_1.position[1], receiver.clock_bias));  // <- use pointer here?
-
-        x_sat_2.push_back(satellite_2.position[0]);
-        y_sat_2.push_back(satellite_2.position[1]);
-        range_2.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_2.position[0], satellite_2.position[1], receiver.clock_bias));
-
-        x_sat_3.push_back(satellite_3.position[0]);
-        y_sat_3.push_back(satellite_3.position[1]);
-        range_3.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_3.position[0], satellite_3.position[1], receiver.clock_bias));
-
-        x_sat_4.push_back(satellite_4.position[0]);
-        y_sat_4.push_back(satellite_4.position[1]);
-        range_4.push_back(getPseudorange(receiver.position[0], receiver.position[1], satellite_4.position[0], satellite_4.position[1], receiver.clock_bias));
+        time(i) = time(i-1) + sampling_time;
+        states_rec.row(i) << receiver.position.transpose(), receiver.clock_bias;
+        states_sat_1.row(i) << sat_1.position.transpose();
+        states_sat_2.row(i) << sat_2.position.transpose();
+        states_sat_3.row(i) << sat_3.position.transpose();
+        states_sat_4.row(i) << sat_4.position.transpose();
+        ranges.row(i) << getPseudorange(receiver.position, sat_1.position, receiver.clock_bias),
+                            getPseudorange(receiver.position, sat_2.position, receiver.clock_bias),
+                            getPseudorange(receiver.position, sat_3.position, receiver.clock_bias),
+                            getPseudorange(receiver.position, sat_4.position, receiver.clock_bias);
     }
 }
 
 void Simulation::dump(std::string file_name){
-    std::ofstream dump;
-    dump.open(file_name);
-    dump << "t (s)" << "," << "x_rec (m)" << "," << "y_rec (m)" << "," << "ctr (m)" << "," 
-            << "x_sat_1 (m)" << "," << "y_sat_1 (m)" << "," << "R_1 (m)" << ","
-            << "x_sat_2 (m)" << "," << "y_sat_2 (m)" << "," << "R_2 (m)" << ","
-            << "x_sat_3 (m)" << "," << "y_sat_3 (m)" << "," << "R_3 (m)" << ","
-            << "x_sat_4 (m)" << "," << "y_sat_4 (m)" << "," << "R_4 (m)" << std::endl;
+    // std::ofstream dump;
+    // dump.open(file_name);
+    // dump << "t (s)" << "," << "x_rec (m)" << "," << "y_rec (m)" << "," << "ctr (m)" << "," 
+    //         << "x_sat_1 (m)" << "," << "y_sat_1 (m)" << "," << "R_1 (m)" << ","
+    //         << "x_sat_2 (m)" << "," << "y_sat_2 (m)" << "," << "R_2 (m)" << ","
+    //         << "x_sat_3 (m)" << "," << "y_sat_3 (m)" << "," << "R_3 (m)" << ","
+    //         << "x_sat_4 (m)" << "," << "y_sat_4 (m)" << "," << "R_4 (m)" << std::endl;
 
-    for (int i = 0; i < time.size(); i++){
-        dump << std::setprecision(4) << time[i] << "," << x_rec[i] << "," << y_rec[i] << "," << clock_bias_rec[i] << ","
-            << x_sat_1[i] << "," << y_sat_1[i] << "," << range_1[i] << ","
-            << x_sat_2[i] << "," << y_sat_2[i] << "," << range_2[i] << ","
-            << x_sat_3[i] << "," << y_sat_3[i] << "," << range_3[i] << ","
-            << x_sat_4[i] << "," << y_sat_4[i] << "," << range_4[i] << std::endl;
-    }
-    dump.close();
+    // for (int i = 0; i < time.size(); i++){
+    //     dump << std::setprecision(4) << time[i] << "," << x_rec[i] << "," << y_rec[i] << "," << clock_bias_rec[i] << ","
+    //         << x_sat_1[i] << "," << y_sat_1[i] << "," << range_1[i] << ","
+    //         << x_sat_2[i] << "," << y_sat_2[i] << "," << range_2[i] << ","
+    //         << x_sat_3[i] << "," << y_sat_3[i] << "," << range_3[i] << ","
+    //         << x_sat_4[i] << "," << y_sat_4[i] << "," << range_4[i] << std::endl;
+    // }
+    // dump.close();
 }
 
-double Simulation::getPseudorange(double x_rec, double y_rec, double x_sat, double y_sat, double clock_bias){
-    return sqrt(pow(x_rec - x_sat, 2) + pow(y_rec - y_sat, 2)) + clock_bias;
+double Simulation::getPseudorange(Eigen::Vector3d pos_rec, Eigen::Vector2d pos_sat, double clock_bias){
+    return sqrt(pow(pos_rec(0) - pos_sat(0), 2) + pow(pos_rec(1) - pos_sat(1), 2) + pow(pos_rec(2), 2)) + clock_bias;
 }
