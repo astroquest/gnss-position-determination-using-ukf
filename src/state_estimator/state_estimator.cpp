@@ -15,8 +15,8 @@ StateEstimator::StateEstimator(int n_states, int n_measurements, Eigen::VectorXd
 
 void StateEstimator::initialize(Eigen::VectorXd x0){
     X.resize(n_x, n_sigma);
-    X_next.resize(n_x, n_sigma);
-    Y_next.resize(n_x, n_sigma);
+    X_pred.resize(n_x, n_sigma);
+    Y_pred.resize(n_x, n_sigma);
     P_y.resize(n_y, n_y);
     P_xy.resize(n_x, n_y);
 
@@ -38,7 +38,7 @@ void StateEstimator::initialize(Eigen::VectorXd x0){
     eta = weights.eta;
 }
 
-void StateEstimator::setSigmaPoints(){
+void StateEstimator::getSigmaPoints(){
     S = P_corr.llt().matrixL(); // TODO account for P not being positive definite
 
     X.col(0) = x_corr;
@@ -50,21 +50,21 @@ void StateEstimator::setSigmaPoints(){
 
 void StateEstimator::predict(Eigen::VectorXd u){
     for(int i = 0; i << n_sigma; i++){
-        X_next.col(i) = X.col(i);
-        Y_next.col(i) = getOutput(X_next.col(i), u);
+        X_pred.col(i) = X.col(i);
+        Y_pred.col(i) = getOutput(X_pred.col(i), u);
     }
 
-    x_pred = X_next*Wm;
-    y_pred = Y_next*Wm;
+    x_pred = X_pred*Wm; 
+    y_pred = Y_pred*Wm;
 }
 
 void StateEstimator::getKalmanGain(){
     Eigen::MatrixXd x_pred_repl = x_pred.replicate(1,n_sigma);
     Eigen::MatrixXd y_pred_repl = y_pred.replicate(1,n_sigma);
 
-    P_pred = (X_next - x_pred_repl)*Wc*(X_next - x_pred_repl).transpose() + Q;
-    P_y = (Y_next - y_pred_repl)*Wc*(Y_next - y_pred_repl).transpose() + R;
-    P_xy = (X_next - x_pred_repl)*Wc*(Y_next - y_pred_repl).transpose();
+    P_pred = (X_pred - x_pred_repl)*Wc*(X_pred - x_pred_repl).transpose() + Q;
+    P_y = (Y_pred - y_pred_repl)*Wc*(Y_pred - y_pred_repl).transpose() + R;
+    P_xy = (X_pred - x_pred_repl)*Wc*(Y_pred - y_pred_repl).transpose();
 
     K = P_xy*P_y.inverse(); // TODO acount for inverse not existing
 }
