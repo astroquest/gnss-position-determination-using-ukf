@@ -15,7 +15,7 @@ class StateEstimator{
 
         Eigen::VectorXd x_corr;
         Eigen::MatrixXd P_corr;
-    private:
+    // private:
         Eigen::VectorXd getOutput(Eigen::VectorXd, Eigen::VectorXd);
 
         int n_x;

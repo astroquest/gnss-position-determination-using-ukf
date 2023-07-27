@@ -21,7 +21,7 @@ void Simulation::initialize(){
     num_samples = sim_time/sampling_time;
 
     // object initial conditions (need more accessible place for this)
-    receiver.initialize(earth_radius, 0, 1, c, 0.01, c*1e-8);
+    receiver.initialize(earth_radius, 0, 1, 1, 0.01, c*1e-8);
     sat_1.initialize(0);
     sat_2.initialize(10*pi/180);
     sat_3.initialize(20*pi/180);

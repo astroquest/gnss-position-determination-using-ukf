@@ -2,6 +2,7 @@
 #include <cmath>
 #include <Eigen/Dense>
 
+#include "../constants.hpp"
 #include "state_estimator.hpp"
 #include "weights.hpp"
 
@@ -22,12 +23,12 @@ void StateEstimator::initialize(Eigen::VectorXd x0){
 
     x_corr = x0;
 
-    Eigen::VectorXd p(3);  // improve this
-    p << 1,1,1;
-    Eigen::VectorXd q(3);
-    q << 2,2,2;
+    Eigen::VectorXd p(4);  // improve this
+    p << pow(earth_radius,2), 10, 10, 100;
+    Eigen::VectorXd q(4);
+    q << 1e-9, 1e-9, 1e-9, 1e-9;
     Eigen::VectorXd r(4);
-    r << 3,3,3,3;
+    r << 1e-10, 1e-10, 1e-10, 1e-10;
 
     Weights weights(n_x, n_y, p, q, r);
     P_corr = weights.P;
@@ -49,7 +50,7 @@ void StateEstimator::getSigmaPoints(){
 }
 
 void StateEstimator::predict(Eigen::VectorXd u){
-    for(int i = 0; i << n_sigma; i++){
+    for(int i = 0; i < n_sigma; i++){
         X_pred.col(i) = X.col(i);
         Y_pred.col(i) = getOutput(X_pred.col(i), u);
     }
@@ -59,7 +60,7 @@ void StateEstimator::predict(Eigen::VectorXd u){
 }
 
 void StateEstimator::getKalmanGain(){
-    Eigen::MatrixXd x_pred_repl = x_pred.replicate(1,n_sigma);
+    Eigen::MatrixXd x_pred_repl = x_pred.replicate(1,n_sigma); // TODO move declaration to .hpp
     Eigen::MatrixXd y_pred_repl = y_pred.replicate(1,n_sigma);
 
     P_pred = (X_pred - x_pred_repl)*Wc*(X_pred - x_pred_repl).transpose() + Q;
@@ -75,12 +76,12 @@ void StateEstimator::correct(Eigen::VectorXd y){
 }
 
 Eigen::VectorXd StateEstimator::getOutput(Eigen::VectorXd x, Eigen::VectorXd u){
-    Eigen::VectorXd y(4); // need to allocate size dynamically
+    Eigen::Vector4d y; // TODO need to allocate size dynamically
 
-    y(1) = sqrt(pow(x(1) - u(1), 2) + pow(x(2) - u(2), 2)) + x(3);
-    y(2) = sqrt(pow(x(1) - u(3), 2) + pow(x(2) - u(4), 2)) + x(3);
-    y(3) = sqrt(pow(x(1) - u(5), 2) + pow(x(2) - u(6), 2)) + x(3);
-    y(4) = sqrt(pow(x(1) - u(7), 2) + pow(x(2) - u(8), 2)) + x(3);
+    y(0) = sqrt(pow(x(0) - u(0), 2) + pow(x(1) - u(1), 2) + pow(x(2), 2)) + x(3);  // TODO needs improvement
+    y(1) = sqrt(pow(x(0) - u(2), 2) + pow(x(1) - u(3), 2) + pow(x(2), 2)) + x(3);
+    y(2) = sqrt(pow(x(0) - u(4), 2) + pow(x(1) - u(5), 2) + pow(x(2), 2)) + x(3);
+    y(3) = sqrt(pow(x(0) - u(6), 2) + pow(x(1) - u(7), 2) + pow(x(2), 2)) + x(3);
 
     return y;
 }

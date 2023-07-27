@@ -13,7 +13,7 @@
 
 int main(){
     //// SIMULATION
-    Simulation simulation(100, 10);
+    Simulation simulation(100, 1);
     simulation.run();
 
     Eigen::MatrixXd baseline = simulation.states_rec;
@@ -30,15 +30,23 @@ int main(){
     Eigen::VectorXd x0(4);
     x0 << 0, 0, 0, c;
 
-    StateEstimator state_estimator(3, 4, x0);
+    StateEstimator state_estimator(4, 4, x0);
 
-    for(int i = 0; i < 100; i++){
+    Eigen::MatrixXd state_estimates;
+    state_estimates.resize(simulation.num_samples, 4);
+
+    for(int i = 0; i < simulation.num_samples; i++){
         state_estimator.getSigmaPoints();
-        std::cout << state_estimator.x_corr << std::endl;
+        // std::cout << input.row(i) << std::endl;
         state_estimator.predict(input.row(i).transpose());
         state_estimator.getKalmanGain();
         state_estimator.correct(output.row(i).transpose());
+        std::cout << state_estimator.x_corr.transpose() << std::endl;
+
+        // state_estimates.row(i) = state_estimator.x_corr.transpose();
     }
+
+    std::cout << baseline - state_estimates << std::endl;
 
 
     return 0;
