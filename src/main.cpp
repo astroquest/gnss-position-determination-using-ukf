@@ -1,28 +1,25 @@
 #include <iostream>
-#include <vector>
 #include <cmath>
-#include <random>
-#include <fstream>
+// #include <random>
+// #include <fstream>
 #include <Eigen/Dense>
 
-#include "constants.hpp"
-#include "simulation/receiver.hpp"
-#include "simulation/satellite.hpp"
-#include "simulation/simulation.hpp"
-#include "state_estimator/weights.hpp"
+// #include "constants.hpp"
+// #include "simulation/receiver.hpp"
+// #include "simulation/satellite.hpp"
+// #include "simulation/simulation.hpp"
+// #include "state_estimator/weights.hpp"
 
 int main(){
     // int n = 3;
     // int m = 4;
     // double alpha = 1e-3;
     // double beta = 2;
-    // double* p = (double [3]){10,10,10};
-    // double* q = (double [3]){10,10,10};
-    // double* r = (double [4]){10,10,10,10};
 
     // Weights weights(n, m, alpha, beta, p, q, r);
-
     // std::cout << weights.P << std::endl;
+    // std::cout << weights.Wm << std::endl;
+    // std::cout << weights.Wc << std::endl;
 
     // Eigen::MatrixXd P(3,3);
     // P << 10, 0, 0, 0, 10, 0, 0, 0, 10;

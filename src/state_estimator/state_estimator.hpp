@@ -1,7 +1,6 @@
 #ifndef STATE_ESTIMATOR_HPP
 #define STATE_ESTIMATOR_HPP
 
-#include <vector>
 #include <Eigen/Dense>
 
 class StateEstimator{
@@ -10,9 +9,9 @@ class StateEstimator{
 
         void initialize(double, Eigen::MatrixXd);
         void getSigmaPoints(double, Eigen::VectorXd, Eigen::MatrixXd);
-        void predict();
+        void predict(Eigen::VectorXd u);
         void getKalmanGain();
-        void correct();
+        void correct(double);
 
         Eigen::VectorXd x_corr;
         Eigen::MatrixXd P_corr;
@@ -27,9 +26,14 @@ class StateEstimator{
         Eigen::MatrixXd Q;
         Eigen::MatrixXd R;
         Eigen::MatrixXd S;
+        Eigen::VectorXd Wm;
+        Eigen::MatrixXd Wc;
         Eigen::MatrixXd X;
         Eigen::MatrixXd X_next;
         Eigen::MatrixXd Y_next;
+        Eigen::MatrixXd P_y;
+        Eigen::MatrixXd P_xy;
+        Eigen::MatrixXd K;
 };
 
 #endif

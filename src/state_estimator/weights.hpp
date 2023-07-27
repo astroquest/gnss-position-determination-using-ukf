@@ -6,25 +6,26 @@
 
 class Weights{
     public:
-        Weights(int, int, double, double, double*, double*, double*);
+        Weights(int, int, double, double, Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
 
-        void setUncertaintyWeights(double*, double*, double*);
+        void setEta();
+        void setLambda();
+        void setUncertaintyWeights(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
         void setSigmaPointWeights();
 
         Eigen::MatrixXd P;
         Eigen::MatrixXd Q;
         Eigen::MatrixXd R;
 
-        std::vector<double> Wm;
-        std::vector<double> Wc;
+        Eigen::VectorXd Wm;
+        Eigen::MatrixXd Wc;
 
         double eta;
 
     private:
-        Eigen::MatrixXd setDiagonalMatrix(double*, int);
-
         int n_states;
         int n_measurements;
+        int n_sigma;
         double alpha;
         double beta;
         double lambda;
