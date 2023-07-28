@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 plt.style.use("bmh")
 
-if __name__ == "__main__":
+def simulation_results():
     df_sim = pd.read_csv("sim_results.txt",sep=',',skiprows=(0),header=(0))
 
     plt.figure()
@@ -28,33 +28,45 @@ if __name__ == "__main__":
     plt.title('Range between receiver and satellite')
     plt.legend()
 
+
+def estimation_results():
     df_estimates = pd.read_csv("estimation_results.txt",sep=',',skiprows=(0),header=(0))
 
     plt.figure()
-    plt.plot(df_estimates["t (s)"], df_estimates["x_rec_baseline (m)"] - df_estimates["x_rec (m)"])
+    plt.plot(df_estimates["t (s)"], df_estimates["x_rec_baseline (m)"], label="baseline")
+    plt.plot(df_estimates["t (s)"], df_estimates["x_rec (m)"], label="estimate")
     plt.xlabel("time (s)")
-    plt.ylabel("x position error (m)")
-    # plt.ylim((-100,100))
-    plt.title('x Position Error')
-    
-    plt.figure()
-    plt.plot(df_estimates["t (s)"], df_estimates["y_rec_baseline (m)"] - df_estimates["y_rec (m)"])
-    plt.xlabel("time (s)")
-    plt.ylabel("y position error (m)")
-    # plt.ylim((-100,100))
-    plt.title('y Position Error')
+    plt.ylabel("x position (m)")
+    # plt.ylim((-10,10))
+    plt.title('Receiver Position')
+    plt.legend()
 
-    # plt.figure()
+    plt.figure()
+    plt.plot(df_estimates["t (s)"], df_estimates["x_rec_baseline (m)"] - df_estimates["x_rec (m)"], label="x")
+    plt.plot(df_estimates["t (s)"], df_estimates["y_rec_baseline (m)"] - df_estimates["y_rec (m)"], label="y")
+    plt.xlabel("time (s)")
+    plt.ylabel("position error (m)")
+    plt.ylim((-10,10))
+    plt.title('Receiver Position Error')
+    plt.legend()
+
+    # plt.figure()  # add z-axis component
     # plt.plot(df_estimates["t (s)"], df_estimates["z_rec_baseline (m)"] - df_estimates["z_rec (m)"])
     # plt.xlabel("time (s)")
     # plt.ylabel("z position error (m)")
-    # plt.title('z Position Error')
+    # plt.title('Receiver Position Error')
 
-    # plt.figure()
-    # plt.plot(df_estimates["t (s)"], df_estimates["clock_bias_baseline (m)"] - df_estimates["clock_bias (m)"])
-    # plt.xlabel("time (s)")
-    # plt.ylabel("clock bias error (m)")
-    # plt.title('Clock Bias Position Error')
+    plt.figure()
+    plt.plot(df_estimates["t (s)"], df_estimates["clock_bias_baseline (m)"] - df_estimates["clock_bias (m)"])
+    plt.xlabel("time (s)")
+    plt.ylabel("clock bias error (m)")
+    plt.ylim((-100,100))
+    plt.title('Clock Bias Position Error')
+
+
+if __name__ == "__main__":
+    # simulation_results()
+    estimation_results()
 
     plt.draw()
     plt.pause(1)

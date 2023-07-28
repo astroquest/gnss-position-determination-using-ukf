@@ -16,14 +16,14 @@
 void simDump(std::string file_name, Eigen::VectorXd time, Eigen::MatrixXd input, Eigen::MatrixXd output){
     std::ofstream dump;
     dump.open(file_name);
-    dump << "t (s)" << ","
+    dump << std::setprecision(15) << "t (s)" << ","
             << "x_sat_1 (m)" << "," << "y_sat_1 (m)" << "," << "R_1 (m)" << ","
             << "x_sat_2 (m)" << "," << "y_sat_2 (m)" << "," << "R_2 (m)" << ","
             << "x_sat_3 (m)" << "," << "y_sat_3 (m)" << "," << "R_3 (m)" << ","
             << "x_sat_4 (m)" << "," << "y_sat_4 (m)" << "," << "R_4 (m)" << std::endl;
 
     for(int i = 0; i < time.rows(); i++){
-        dump << std::setprecision(4) << time(i) << ","
+        dump << time(i) << ","
                 << input(i,0) << "," << input(i,1) << "," << output(i,0) << ","
                 << input(i,2) << "," << input(i,3) << "," << output(i,1) << ","
                 << input(i,4) << "," << input(i,5) << "," << output(i,2) << ","
@@ -42,7 +42,7 @@ void stateEstimationDump(std::string file_name, Eigen::VectorXd time, Eigen::Mat
             << "clock_bias (m)" << std::endl;
 
     for(int i = 0; i < time.rows(); i++){
-        dump << std::setprecision(4) << time(i) << ","
+        dump << std::setprecision(15) << time(i) << ","
                 << baseline(i,0) << "," << baseline(i,1) << ","
                 << baseline(i,2) << ","
                 << estimates(i,0) << "," << estimates(i,1) << ","
@@ -53,11 +53,10 @@ void stateEstimationDump(std::string file_name, Eigen::VectorXd time, Eigen::Mat
 
 int main(){
     //// SIMULATION
-    Simulation simulation(120, 1);
+    Simulation simulation(60, 1);
     simulation.run();
 
-
-    Eigen::MatrixXd baseline = simulation.states_rec;
+    Eigen::MatrixXd baseline = simulation.states_rec; // TODO move to function?
     Eigen::MatrixXd input;
     input.resize(simulation.num_samples, 4*2);
     input << simulation.states_sat_1, 
@@ -85,9 +84,10 @@ int main(){
         state_estimates.row(i) = state_estimator.x_corr.transpose();
     }
 
-    std::cout << baseline << std::endl;
-    std::cout << std::endl;
-    std::cout << state_estimates << std::endl;
+    // std::cout << baseline << std::endl;
+    // std::cout << std::endl;
+    // std::cout << state_estimates << std::endl;
+    // std::cout << baseline - state_estimates << std::endl;
 
     simDump("../data/sim_results.txt", simulation.time, input, output);
     stateEstimationDump("../data/estimation_results.txt", simulation.time, baseline, state_estimates);

@@ -27,8 +27,8 @@ void StateEstimator::initialize(Eigen::VectorXd x0){
     Eigen::Vector3d q;
     Eigen::Vector4d r;
     p << pow(earth_radius,2), pow(earth_radius,2), 10000;
-    q << 0.1, 0.1, 0.1;
-    r << 1, 1, 1, 1;
+    q << 1, 1, 10;
+    r << .1, .1, .1, .1;
 
     Weights weights(n_x, n_y, p, q, r);
     P_corr = weights.P;

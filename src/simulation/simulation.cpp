@@ -21,7 +21,7 @@ void Simulation::initialize(){
     num_samples = sim_time/sampling_time;
 
     // sim settings
-    receiver.initialize(earth_radius/2, earth_radius/2, 1000, 0, 0);
+    receiver.initialize(earth_radius/2, earth_radius/2, 1000, 1, 10);
     sat_1.initialize(-30*pi/180);
     sat_2.initialize(-15*pi/180);
     sat_3.initialize(15*pi/180);
