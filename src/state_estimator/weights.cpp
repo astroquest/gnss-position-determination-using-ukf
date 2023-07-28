@@ -18,12 +18,12 @@ Weights::Weights(int n_states, int n_measurements, Eigen::VectorXd p, Eigen::Vec
     setSigmaPointWeights();
 }
 
-void Weights::setEta(){
-    eta = sqrt(n_x + lambda);
-}
-
 void Weights::setLambda(){
     lambda = n_x*(pow(alpha,2) - 1);
+}
+
+void Weights::setEta(){
+    eta = sqrt(n_x + lambda);
 }
 
 void Weights::setUncertaintyWeights(Eigen::VectorXd p, Eigen::VectorXd q, Eigen::VectorXd r){

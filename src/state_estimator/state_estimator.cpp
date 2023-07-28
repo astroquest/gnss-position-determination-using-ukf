@@ -17,18 +17,18 @@ StateEstimator::StateEstimator(int n_states, int n_measurements, Eigen::VectorXd
 void StateEstimator::initialize(Eigen::VectorXd x0){
     X.resize(n_x, n_sigma);
     X_pred.resize(n_x, n_sigma);
-    Y_pred.resize(n_x, n_sigma);
+    Y_pred.resize(n_y, n_sigma);
     P_y.resize(n_y, n_y);
     P_xy.resize(n_x, n_y);
 
     x_corr = x0;
 
-    Eigen::VectorXd p(4);  // improve this
-    p << pow(earth_radius,2), 10, 10, 100;
-    Eigen::VectorXd q(4);
-    q << 1e-9, 1e-9, 1e-9, 1e-9;
-    Eigen::VectorXd r(4);
-    r << 1e-10, 1e-10, 1e-10, 1e-10;
+    Eigen::Vector3d p;  // TODO improve this and change location
+    Eigen::Vector3d q;
+    Eigen::Vector4d r;
+    p << pow(earth_radius,2), pow(earth_radius,2), 10000;
+    q << 0.1, 0.1, 0.1;
+    r << 1, 1, 1, 1;
 
     Weights weights(n_x, n_y, p, q, r);
     P_corr = weights.P;
@@ -40,12 +40,12 @@ void StateEstimator::initialize(Eigen::VectorXd x0){
 }
 
 void StateEstimator::getSigmaPoints(){
-    S = P_corr.llt().matrixL(); // TODO account for P not being positive definite
+    S = P_corr.llt().matrixL();
 
     X.col(0) = x_corr;
-    for(int i = 1; i <= n_x; i++){
-        X.col(i) = x_corr + eta*S.col(i-1);
-        X.col(i+n_x) = x_corr - eta*S.col(i-1);
+    for(int i = 0; i < n_x; i++){
+        X.col(i+1) = x_corr + eta*S.col(i);
+        X.col(i+n_x+1) = x_corr - eta*S.col(i);
     }
 }
 
@@ -55,19 +55,19 @@ void StateEstimator::predict(Eigen::VectorXd u){
         Y_pred.col(i) = getOutput(X_pred.col(i), u);
     }
 
-    x_pred = X_pred*Wm; 
+    x_pred = X_pred*Wm;
     y_pred = Y_pred*Wm;
 }
 
 void StateEstimator::getKalmanGain(){
-    Eigen::MatrixXd x_pred_repl = x_pred.replicate(1,n_sigma); // TODO move declaration to .hpp
-    Eigen::MatrixXd y_pred_repl = y_pred.replicate(1,n_sigma);
+    x_pred_repl = x_pred.replicate(1,n_sigma);
+    y_pred_repl = y_pred.replicate(1,n_sigma);
 
     P_pred = (X_pred - x_pred_repl)*Wc*(X_pred - x_pred_repl).transpose() + Q;
     P_y = (Y_pred - y_pred_repl)*Wc*(Y_pred - y_pred_repl).transpose() + R;
     P_xy = (X_pred - x_pred_repl)*Wc*(Y_pred - y_pred_repl).transpose();
 
-    K = P_xy*P_y.inverse(); // TODO acount for inverse not existing
+    K = P_xy*P_y.inverse();
 }
 
 void StateEstimator::correct(Eigen::VectorXd y){
@@ -76,12 +76,10 @@ void StateEstimator::correct(Eigen::VectorXd y){
 }
 
 Eigen::VectorXd StateEstimator::getOutput(Eigen::VectorXd x, Eigen::VectorXd u){
-    Eigen::Vector4d y; // TODO need to allocate size dynamically
+    y_est << sqrt(pow(x(0) - u(0), 2) + pow(x(1) - u(1), 2)) + x(2),
+            sqrt(pow(x(0) - u(2), 2) + pow(x(1) - u(3), 2)) + x(2),
+            sqrt(pow(x(0) - u(4), 2) + pow(x(1) - u(5), 2)) + x(2),
+            sqrt(pow(x(0) - u(6), 2) + pow(x(1) - u(7), 2)) + x(2);
 
-    y(0) = sqrt(pow(x(0) - u(0), 2) + pow(x(1) - u(1), 2) + pow(x(2), 2)) + x(3);  // TODO needs improvement
-    y(1) = sqrt(pow(x(0) - u(2), 2) + pow(x(1) - u(3), 2) + pow(x(2), 2)) + x(3);
-    y(2) = sqrt(pow(x(0) - u(4), 2) + pow(x(1) - u(5), 2) + pow(x(2), 2)) + x(3);
-    y(3) = sqrt(pow(x(0) - u(6), 2) + pow(x(1) - u(7), 2) + pow(x(2), 2)) + x(3);
-
-    return y;
+    return y_est;
 }

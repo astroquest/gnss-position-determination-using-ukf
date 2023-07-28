@@ -3,4 +3,3 @@ build/
 tests/
 
 .DS_Store
-CMakeLists.txt

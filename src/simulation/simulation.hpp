@@ -7,7 +7,6 @@ class Simulation{
 
         void initialize();
         void run();
-        void dump(std::string);
 
         Eigen::VectorXd time;
         Eigen::MatrixXd states_rec;
@@ -20,7 +19,7 @@ class Simulation{
         int num_samples;
         
     private:
-        double getPseudorange(Eigen::Vector3d, Eigen::Vector2d, double);
+        double getPseudorange(Eigen::Vector2d, Eigen::Vector2d, double);
 
         Receiver receiver;
         Satellite sat_1;
