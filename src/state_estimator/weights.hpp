@@ -6,16 +6,11 @@
 
 class Weights{
     public:
-        Weights(int, int, Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
+        Weights(int, int, double, double);
 
         void setEta();
         void setLambda();
-        void setUncertaintyWeights(Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd);
         void setSigmaPointWeights();
-
-        Eigen::MatrixXd P;
-        Eigen::MatrixXd Q;
-        Eigen::MatrixXd R;
 
         Eigen::VectorXd Wm;
         Eigen::MatrixXd Wc;

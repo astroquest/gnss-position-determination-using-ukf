@@ -46,7 +46,7 @@ def estimation_results():
     plt.plot(df_estimates["t (s)"], df_estimates["y_rec_baseline (m)"] - df_estimates["y_rec (m)"], label="y")
     plt.xlabel("time (s)")
     plt.ylabel("position error (m)")
-    plt.ylim((-10,10))
+    plt.ylim((-5,5))
     plt.title('Receiver Position Error')
     plt.legend()
 
@@ -60,8 +60,8 @@ def estimation_results():
     plt.plot(df_estimates["t (s)"], df_estimates["clock_bias_baseline (m)"] - df_estimates["clock_bias (m)"])
     plt.xlabel("time (s)")
     plt.ylabel("clock bias error (m)")
-    plt.ylim((-100,100))
-    plt.title('Clock Bias Position Error')
+    plt.ylim((-5,5))
+    plt.title('Clock Bias Error')
 
 
 if __name__ == "__main__":

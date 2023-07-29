@@ -3,13 +3,13 @@
 
 class Simulation{
     public:
-        Simulation(double, double);
+        Simulation(double, double, double, double, double, double, double, double, double, double, double);
 
-        void initialize();
+        void initialize(double, double, double, double, double, double, double, double, double);
         void run();
 
         Eigen::VectorXd time;
-        Eigen::MatrixXd states_rec;
+        Eigen::MatrixXd states_receiver;
         Eigen::MatrixXd states_sat_1;
         Eigen::MatrixXd states_sat_2;
         Eigen::MatrixXd states_sat_3;
