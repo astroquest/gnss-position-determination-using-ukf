@@ -4,17 +4,16 @@
 
 #include "weights.hpp"
 
-Weights::Weights(int n_states, int n_measurements, Eigen::VectorXd p, Eigen::VectorXd q, Eigen::VectorXd r){
+Weights::Weights(int n_states, int n_measurements, double alph, double bet){
     n_x = n_states;
     n_y = n_measurements;
     n_sigma = 2*n_x + 1;
 
-    alpha = 1e-3;
-    beta = 2;
+    alpha = alph;
+    beta = bet;
 
     setLambda();
     setEta();
-    setUncertaintyWeights(p, q, r);
     setSigmaPointWeights();
 }
 
@@ -24,16 +23,6 @@ void Weights::setLambda(){
 
 void Weights::setEta(){
     eta = sqrt(n_x + lambda);
-}
-
-void Weights::setUncertaintyWeights(Eigen::VectorXd p, Eigen::VectorXd q, Eigen::VectorXd r){
-    P.resize(n_x, n_x);
-    Q.resize(n_x, n_x);
-    R.resize(n_y, n_y);
-
-    P = p.asDiagonal();
-    Q = q.asDiagonal();
-    R = r.asDiagonal();
 }
 
 void Weights::setSigmaPointWeights(){

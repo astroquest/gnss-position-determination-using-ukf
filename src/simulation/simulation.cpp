@@ -10,25 +10,35 @@
 #include "satellite.hpp"
 #include "simulation.hpp"
 
-Simulation::Simulation(double t_sim, double t_sample){
+Simulation::Simulation(double t_sim, double t_sample, double init_x_receiver,
+                        double init_y_receiver, double init_clock_bias_receiver, 
+                        double stdev_position_receiver, double stdev_clock_bias_receiver,
+                        double init_mean_anomaly_sat_1, double init_mean_anomaly_sat_2, 
+                        double init_mean_anomaly_sat_3, double init_mean_anomaly_sat_4){
     sim_time = t_sim;
     sampling_time = t_sample;
 
-    initialize();
+    initialize(init_x_receiver, init_y_receiver, init_clock_bias_receiver, 
+                stdev_position_receiver, stdev_clock_bias_receiver,
+                init_mean_anomaly_sat_1, init_mean_anomaly_sat_2,
+                init_mean_anomaly_sat_3, init_mean_anomaly_sat_4);
 }
 
-void Simulation::initialize(){
+void Simulation::initialize(double init_x_receiver, double init_y_receiver, double init_clock_bias_receiver, 
+                            double stdev_position_receiver, double stdev_clock_bias_receiver,
+                            double init_mean_anomaly_sat_1, double init_mean_anomaly_sat_2, 
+                            double init_mean_anomaly_sat_3, double init_mean_anomaly_sat_4){
     num_samples = sim_time/sampling_time;
 
-    // sim settings
-    receiver.initialize(earth_radius/2, earth_radius/2, 1000, 1, 10);
-    sat_1.initialize(-30*pi/180);
-    sat_2.initialize(-15*pi/180);
-    sat_3.initialize(15*pi/180);
-    sat_4.initialize(30*pi/180);
+    receiver.initialize(init_x_receiver, init_y_receiver, init_clock_bias_receiver,
+                        stdev_position_receiver, stdev_clock_bias_receiver);
+    sat_1.initialize(init_mean_anomaly_sat_1*pi/180);
+    sat_2.initialize(init_mean_anomaly_sat_2*pi/180);
+    sat_3.initialize(init_mean_anomaly_sat_3*pi/180);
+    sat_4.initialize(init_mean_anomaly_sat_4*pi/180);
 
     time.resize(num_samples);
-    states_rec.resize(num_samples, 3);
+    states_receiver.resize(num_samples, 3);
     states_sat_1.resize(num_samples, 2);
     states_sat_2.resize(num_samples, 2);
     states_sat_3.resize(num_samples, 2);
@@ -36,7 +46,7 @@ void Simulation::initialize(){
     ranges.resize(num_samples, 4);
 
     time(0) = 0;
-    states_rec.row(0) << receiver.position.transpose(), receiver.clock_bias;
+    states_receiver.row(0) << receiver.position.transpose(), receiver.clock_bias;
     states_sat_1.row(0) << sat_1.position.transpose();
     states_sat_2.row(0) << sat_2.position.transpose();
     states_sat_3.row(0) << sat_3.position.transpose();
@@ -58,7 +68,7 @@ void Simulation::run(){
         sat_4.propagateOrbit(sampling_time);
 
         time(i) = time(i-1) + sampling_time;
-        states_rec.row(i) << receiver.position.transpose(), receiver.clock_bias;
+        states_receiver.row(i) << receiver.position.transpose(), receiver.clock_bias;
         states_sat_1.row(i) << sat_1.position.transpose();
         states_sat_2.row(i) << sat_2.position.transpose();
         states_sat_3.row(i) << sat_3.position.transpose();
