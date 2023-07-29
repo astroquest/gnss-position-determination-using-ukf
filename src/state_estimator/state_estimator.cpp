@@ -26,9 +26,9 @@ void StateEstimator::initialize(double alpha, double beta,
     P_y.resize(n_y, n_y);
     P_xy.resize(n_x, n_y);
 
-    // P_corr.resize(n_x, n_x);  // which resizes are actually necessary?
-    // Q.resize(n_x, n_x);
-    // R.resize(n_y, n_y);
+    P_corr.resize(n_x, n_x);  // which resizes are actually necessary?
+    Q.resize(n_x, n_x);
+    R.resize(n_y, n_y);
 
     x_corr = x0;
     P_corr = p.asDiagonal();

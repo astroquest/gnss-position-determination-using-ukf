@@ -14,15 +14,6 @@
 #include "state_estimator/weights.hpp"
 #include "state_estimator/state_estimator.hpp"
 
-/* TODO
-- General refactoring
-- Move covariance matrices to state_estimator DONE
-- Streamline the size of matrices (position dimensions etc.)
-- Optimize matrix declarations (i.e. <double, dynamic, 3>)
-- Save figure and put in README.md
-- Move dump functions to separate class/header
-*/
-
 int main(){
     //// SIMULATION
     Simulation simulation(sim_time, sampling_time, init_x_receiver, 

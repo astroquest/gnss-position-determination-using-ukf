@@ -15,8 +15,8 @@ double beta = 2;
 Eigen::Vector3d x0(0, 0, 0);
 
 // diagonals of covariance matrices
-Eigen::Vector3d p(pow(earth_radius,2), pow(earth_radius,2), 10000);
-Eigen::Vector3d q(1, 1, 100);
-Eigen::Vector4d r(0.1, 0.1, 0.1, 0.1);
+Eigen::Vector3d p(pow(earth_radius,2), pow(earth_radius,2), 1000);
+Eigen::Vector3d q(10, 10, 100);
+Eigen::Vector4d r(1, 1, 1, 1);
 
 #endif

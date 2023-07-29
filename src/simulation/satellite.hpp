@@ -3,7 +3,7 @@
 
 class Satellite{
     public:
-        Satellite(double = 25e6, double = 0);
+        Satellite(double = 25e6);
 
         void initialize(double);
         void propagateOrbit(double);
