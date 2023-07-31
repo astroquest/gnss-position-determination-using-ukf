@@ -10,13 +10,13 @@
 #include "satellite.hpp"
 #include "simulation.hpp"
 
-Simulation::Simulation(double t_sim, double t_sample, double init_x_receiver,
+Simulation::Simulation(double sim_time, double sampling_time, double init_x_receiver,
                         double init_y_receiver, double init_clock_bias_receiver, 
                         double stdev_position_receiver, double stdev_clock_bias_receiver,
                         double init_mean_anomaly_sat_1, double init_mean_anomaly_sat_2, 
                         double init_mean_anomaly_sat_3, double init_mean_anomaly_sat_4){
-    sim_time = t_sim;
-    sampling_time = t_sample;
+    this->sim_time = sim_time;
+    this->sampling_time = sampling_time;
 
     initialize(init_x_receiver, init_y_receiver, init_clock_bias_receiver, 
                 stdev_position_receiver, stdev_clock_bias_receiver,

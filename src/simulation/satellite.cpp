@@ -4,8 +4,8 @@
 #include "../constants.hpp"
 #include "satellite.hpp"
 
-Satellite::Satellite(double r){
-    orbital_radius = r;
+Satellite::Satellite(double orbital_radius){
+    this->orbital_radius = orbital_radius;
 }
 
 void Satellite::initialize(double init_mean_anomaly){

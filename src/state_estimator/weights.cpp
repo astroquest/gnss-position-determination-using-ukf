@@ -4,13 +4,13 @@
 
 #include "weights.hpp"
 
-Weights::Weights(int n_states, int n_measurements, double alph, double bet){
-    n_x = n_states;
-    n_y = n_measurements;
+Weights::Weights(int n_x, int n_y, double alpha, double beta){
+    this->n_x = n_x;
+    this->n_y = n_y;
     n_sigma = 2*n_x + 1;
 
-    alpha = alph;
-    beta = bet;
+    this->alpha = alpha;
+    this->beta = beta;
 
     setLambda();
     setEta();
