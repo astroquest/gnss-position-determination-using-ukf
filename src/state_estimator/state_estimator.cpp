@@ -6,12 +6,12 @@
 #include "state_estimator.hpp"
 #include "weights.hpp"
 
-StateEstimator::StateEstimator(int n_states, int n_measurements, 
+StateEstimator::StateEstimator(int n_x, int n_y, 
                                 double alpha, double beta, 
                                 Eigen::VectorXd x0, Eigen::VectorXd p, 
                                 Eigen::VectorXd r, Eigen::VectorXd q){
-    n_x = n_states;
-    n_y = n_measurements;
+    this->n_x = n_x;
+    this->n_y = n_y;
     n_sigma = 2*n_x + 1;
 
     initialize(alpha, beta, x0, p, q, r);

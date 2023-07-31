@@ -8,10 +8,9 @@ Receiver position estimation using pseudorange observations from multiple satell
 ### Scope
 The main objective of the project was to practice with C++ and implement a UKF in C++. This meant the simulation was kept limited to 2D. 
 - The satellites all follow zero-inclination circular orbits with an identical radius. The only difference is their starting angle. 
-- The receiver only moves in the x and y directions. The reference frame is an Earth-centered frame where the direction of the x- and y-axes rotate with Earth's rotational velocity.
+- The receiver only moves in the x and y directions. The reference frame is the ECEF frame where the directions of the x- and y-axes rotate with Earth's rotational velocity.
 
 ### Future Work
-- Switch to Earth-centered, Earth-fixed (ECEF) reference frame.
 - Expand simulation and state estimator to 3D.
 - Add atmospheric effects to pseudorange observations.
 - Make satellite clocks drift as well.
