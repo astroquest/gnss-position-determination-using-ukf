@@ -1,8 +1,3 @@
-#if __INTELLISENSE__  // needed to fix a vscode intellisense issue with the eigen library 
-#undef __ARM_NEON     // -> https://github.com/microsoft/vscode-cpptools/issues/7413
-#undef __ARM_NEON__
-#endif
-
 #include <iostream>
 #include <cmath>
 #include <random>
