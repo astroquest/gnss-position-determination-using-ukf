@@ -22,4 +22,3 @@ The figures below show the actual x position versus the estimated x position, th
 
 ![alt text](https://github.com/astroquest/gnss-position-determination-using-ukf/blob/main/figures/receiver_position.png?raw=true)
 ![alt text](https://github.com/astroquest/gnss-position-determination-using-ukf/blob/main/figures/receiver_position_error.png?raw=true)
-![alt text](https://github.com/astroquest/gnss-position-determination-using-ukf/blob/main/figures/clock_bias_error.png?raw=true)
